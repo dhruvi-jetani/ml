@@ -1,0 +1,360 @@
+library
+----------
+cv2
+numpy
+matplotlib.pyplot
+pandas
+sklearn
+ucimlrepo 
+nltk
+random
+
+image filtering
+*************************************
+->box
+import cv2
+import matplotlib.pyplot as plt
+img=cv2.imread("33.jfif")
+img=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+blurred_img=cv2.blur(img,(15,15))
+plt.imshow(blurred_img)
+--------------------------
+->gaussian
+img=cv2.imread("33.jfif")
+img=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+blurred_img=cv2.GaussianBlur(img,(15,15),0)
+plt.imshow(blurred_img)
+------------------------------
+->median
+img=cv2.imread("33.jfif")
+img=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+blurred_img=cv2.medianBlur(img,5)
+plt.imshow(blurred_img)
+---------------------
+->motion blur
+###############
+import cv2
+import matplotlib.pyplot as plt import numpy as np
+img=cv2.cvtColor(cv2.imread('D:/sem-3/ml/13.jpeg'),cv2.COLOR_BGR2RGB)
+size=20
+#Horizontal
+k1=np.zeros((size,size))
+k1[int(size/2),:]=np.ones(size)
+k1=k1/size
+img1=cv2.filter2D(img,-1,k1)
+k2=np.zeros((size,size))
+k2[:,int(size/2)]=np.ones(size)
+k2=k2/size
+img2=cv2.filter2D(img,-1,k2)
+plt.rcParams['figure.figsize'] = 15,15
+plt.subplot(1,3,1),plt.imshow(img),plt.title("Orignal Image")
+plt.subplot(1,3,2),plt.imshow(img1),plt.title("Horizontal Bluring")
+plt.subplot(1,3,3),plt.imshow(img2),plt.title("Vertical Bluring")
+--------------------------
+->edge detaction
+###################
+img = cv2.imread('D:/sem-3/ml/13.jpeg',0)
+img1 = cv2.Sobel(img,cv2.CV_64F,1,0,5)
+img2 = cv2.Sobel(img,cv2.CV_64F,0,1,5)
+img3 = cv2.Laplacian(img,cv2.CV_64F)
+img4 = cv2.Canny(img,50,150)
+plt.subplot(2,3,1),plt.imshow(img,cmap = 'gray'),plt.title('Original')
+plt.subplot(2,3,2),plt.imshow(img1,cmap = 'gray'),plt.title('Sobel')
+plt.subplot(2,3,3),plt.imshow(img2,cmap = 'gray'),plt.title('Sobel')
+plt.subplot(2,3,4),plt.imshow(img3,cmap = 'gray'),plt.title('Laplacian')
+plt.subplot(2,3,5),plt.imshow(img4,cmap = 'gray'),plt.title('Canny')
+===========================================================================
+object detection
+********************
+->face
+##########
+import cv2
+img=cv2.imread("1.jpg",cv2.IMREAD_COLOR)
+face_cascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+grey_img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+faces=face_cascade.detectMultiScale(grey_img,1.1,4)#14,30
+print(faces)
+for(x,y,w,h) in faces:
+    cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),3)  
+cv2.imshow("Face Detector",img)
+cv2.waitKey(5000)
+cv2.destroyAllWindows()
+===========================================================================
+data preprocessing
+*******************************
+->regression
+#############
+import pandas as pd
+from sklearn import linear_model
+import numpy as np
+import matplotlib.pyplot as plt
+data=pd.read_csv('Data_Advertising.csv')
+x=np.array(data.TV).reshape(-1,1)
+y=np.array(data.sales).reshape(-1,1)
+lr_model=linear_model.LinearRegression()
+lr_model.fit(x,y)
+xtest=x
+ytest=lr_model.predict(xtest)
+plt.scatter (x,y,color='blue')
+plt.scatter (x,ytest, color='red')
+plt.show()
+--------------------------------------------------------------
+->Decision Tree Rregression
+###########################
+from sklearn import linear_model,model_selection 
+import pandas as pd
+import numpy as np
+from sklearn.tree import DecisionTreeRegressor
+data-pd.read_csv("Salary.csv")
+x=np.array(data. Years Experience).reshape(-1,1) 
+y=np.array(data.Salary).reshape(-1,1)
+xtrain,xtest,ytrain,ytest-model_selection.train_test_split(x,y,test_size=0.3)
+regressor=DecisionTreeRegressor()
+regressor.fit(xtrain,ytrain)
+ytest_predicted-regressor.predict(xtest)
+print(xtest) 
+print(ytest)
+print(ytest_predicted)
+print("Mean Absolute Error:",mean_absolute_error(ytest,ytest_predicted)) 
+print("Mean Squared Error:",mean_squared_error(ytest,ytest_predicted))
+print("Mean absolute percentage:",mean_absolute_percentage_error(ytest,ytest_predicted))
+--------------------------------------------------------------
+from sklearn import linear_model,model_selection,preprocessing
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+data=pd.read_csv("Weather.csv")
+print(data.fillna(1,inplace=True))
+label_encoder=preprocessing.LabelEncoder()
+x=np.array(label_encoder.fit_transform(data.MaxTemp)).reshape(-1,1)
+y=np.array(data.YR).reshape(-1,1)
+xtrain,xtest,ytrain,ytest=model_selection.train_test_split(x,y,test_size=0.3)
+lr = linear_model.LinearRegression()
+lr.fit(xtrain,ytrain)
+ytest_predicted=lr.predict(xtest)
+plt.scatter(xtrain,ytrain,color="red")
+plt.scatter(xtest,ytest,color="blue")
+plt.show()
+------------------------------------------------------------
+->linear region
+##################
+import pandas as pd
+from sklearn import linear_model
+from sklearn.preprocessing import LabelEncoder
+import numpy as np
+import matplotlib.pyplot as plt
+data = pd.read_csv('insurance.csv')
+le_sex = LabelEncoder()
+data['sex'] = le_sex.fit_transform(data['sex'])
+le_smoker = LabelEncoder()
+data['region'] = le_smoker.fit_transform(data['region'])
+x = np.array(data['sex']).reshape(-1, 1)
+y = np.array(data['region']).reshape(-1, 1)
+lr_model = linear_model.LinearRegression()
+lr_model.fit(x, y)
+ytest = lr_model.predict(x)
+plt.scatter(x, y, color='blue', label='Actual data')
+plt.scatter(x, ytest, color='red', label='Fitted line')
+plt.xlabel('Sex (encoded)')
+plt.ylabel('region (encoded)')
+plt.title('Linear Regression: Sex vs. region')
+plt.legend()
+plt.show()
+-----------------------------------------------------------
+->classification
+#################
+from sklearn import model_selection
+import sklearn.datasets as db 
+from sklearn.naive_bayes import GaussianNB
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+dataset = db.load_iris()
+x=np.array(dataset.data[:,0]).reshape(-1,1)
+y=np.array(dataset.target).reshape(-1,1)
+xtrain,xtest,ytrain,ytest=model_selection.train_test_split(x,y,test_size=0.3)
+classifier=GaussianNB()
+classifier.fit(xtrain,ytrain)
+ytest_predicted=classifier.predict(xtest)
+print(xtest,ytest)
+print(ytest_predicted)
+plt.scatter(xtest,ytest)
+plt.scatter(xtest,ytest_predicted)
+plt.show()
+------------------------------------------------------------
+from ucimlrepo import fetch_ucirepo  
+heart_disease = fetch_ucirepo(id=45)  
+X = heart_disease.data.features.chol 
+y = heart_disease.data.num 
+print(x)  
+print(y) 
+x=np.array(dataset.data[:,0]).reshape(-1,1)
+y=np.array(dataset.target).reshape(-1,1)
+xtrain,xtest,ytrain,ytest=model_selection.train_test_split(x,y,test_size=0.3)
+classifier=GaussianNB()
+classifier.fit(xtrain,ytrain)
+ytest_predicted=classifier.predict(xtest)
+print(xtest,ytest)
+print(ytest_predicted)
+plt.scatter(xtest,ytest)
+plt.scatter(xtest,ytest_predicted)
+plt.show()
+------------------------------------------------------------
+from sklearn.datasets import fetch_20newsgroups
+from sklearn.naive_bayes import Multinomial NB
+from sklearn.feature_extraction.text import TfidfTransformer 
+from sklearn.feature_extraction.text import CountVectorizer
+category_map={"misc.forsale': 'Sales', 'rec.motorcycles': 'Motorcycles', 'rec.sport.baseball': 'Baseball', 'sci.crypt': 'Cryptography'"} 
+training_data=fetch_20newsgroups (subset="train", categories-category_map.keys(), shuffle=True, random_state=7)
+for i in range(6):
+    print(training_data.data[i])
+cv-CountVectorizer()
+xtrain_tc = cv.fit_transform(training_data.data)
+input_data=['The curveballs of right handed pitchers tend to curve motorcycle to the left', 'Caesar cipher is an encient form of']
+tfidf_obj-TfidfTransformer()
+xtrain_tfidf=tfidf_obj.fit_transform(xtrain_tc)
+classifier-MultinomialNB().fit(xtrain_tfidf,training_data.target)
+input_data_tc-cv.transform(input_data) 
+input_tfidf=tfidf_obj.transform(input_data_tc)
+pc-classifier.predict(input_tfidf)
+for sentence, category in zip(input_data,pc):
+    print(sentence, "-->", category_map[training_data.target_names[category]])
+==================================================================
+->clustering
+##############
+->KMeans Clustering
+from sklearn.cluster import KMeans 
+data=pd.read_csv("2017.csv")
+print(type(data))
+data=data.iloc[:,1:]
+kmeans_obj=KMeans (init='k-means++',n_clusters=3)
+kmeans_obj.fit_predict(data)
+-----------------------------------------------------
+->Meanshift Clustering
+########################
+from sklearn.cluster import MeanShift, estimate_bandwidth
+bandwidth estimate_bandwidth (data) 
+meanshift_obj=MeanShift (bandwidth-bandwidth) 
+result=meanshift_obj.fit(data)
+result.predict(data)
+=================================================================
+->tokenization
+*****************************
+import nltk
+#nltk.download()
+from nltk import sent_tokenize
+text="hello medam km cho maja ma cho?"
+print(text)
+print("="*80)
+output=sent_tokenize(text)
+print(output)
+-----------------------
+from nltk import  word_tokenize
+text="hello medam km cho maja ma cho?"
+print(text)
+print("="*80)
+output=word_tokenize(text)
+print(output)
+-------------------------
+from nltk import WordPunctTokenizer
+text="hello medam km cho maja ma cho?"
+print(text)
+print("="*80)
+output=WordPunctTokenizer()
+model=output.tokenize(text)
+print(model)
+----------------------------
+from nltk import sent_tokenize
+file=open("data.txt",'r')
+my=file.read()
+output=sent_tokenize(my)
+print(output)
+print("-"*50)
+word=len(output)
+print(word)
+==================================================================
+->stemming
+*********************
+import nltk
+nltk.download('punkt') 
+from nltk.stem import PorterStemmer, LancasterStemmer
+from nltk.tokenize import word_tokenize
+porter_stemmer = PorterStemmer()
+lancaster_stemmer = LancasterStemmer()
+text = "Running runners run faster than the fastest running track athletes."
+words = word_tokenize(text)
+porter_stemmed_words = [porter_stemmer.stem(word) for word in words]
+print("Porter Stemmer Result:", porter_stemmed_words)
+lancaster_stemmed_words = [lancaster_stemmer.stem(word) for word in words]
+print("Lancaster Stemmer Result:", lancaster_stemmed_words)
+---------------------------------
+import nltk
+nltk.download('names')
+import random
+from nltk.corpus import names
+from nltk import NaiveBayesClassifier
+from nltk.classify import accuracy
+def gender_features(word,n=2):
+    return ({'feature': word[-n:].lower()})
+labels=[(name, 'male') for name in names.words ('male.txt')]+[(name, 'female') for name in names.words('female.txt')] 
+print(labels [1:3])
+data=f 'Leonardo', 'Amy', 'Sem', 'levely', 'king', 'mira', 'jay', 'ram', 'sita', 'priti', 'mit']
+feature_set=[(gender_features (n,3), gender) for (n, gender) in labels]
+training, testing=feature_set[500:], feature_set[200:]
+classifier NaiveBayesClassifier.train(training)
+print(accuracy(classifier, testing)*100)
+for name in data:
+    print(name, '-->',classifier.classify(gender_features (name,5)))
+=========================================================================
+->lemmatization
+*************************
+from nltk.stem import WordNetLemmatizer
+words=['table', 'probably', 'wolves','playing','is', 'cats', 'the', 'beaches', 'grounded', 'Commonly', 'envision', 'holded', 'childeren'] 
+lwordnet=WordNetLemmatizer()
+for word in words:
+    lemmatized_words=[lwordnet.lemmatize(word,pos="v"),lwordnet.lemmatize (word, pos="n")]
+    print(word, "-->",*lemmatized_words)
+=============================================================================================================
+->morphological img proccessing
+img = cv2.imread('D:/sem-3/ml/100.png')
+k1 = np.ones((5,5),np.uint8)
+img1 = cv2.erode(img,k1,iterations=1)
+img2 = cv2.dilate(img,k1,iterations=1)
+plt.rcParams['figure.figsize']=15,15
+plt.subplot(1,3,1),plt.imshow(img),plt.title("Original")
+plt.subplot(1,3,2),plt.imshow(img1),plt.title("Erosion")
+plt.subplot(1,3,3),plt.imshow(img2),plt.title("Dialation")
+========================
+->kernal matrix
+k1=np.array([[0,0,0],[0,0,0],[0,0,0]])
+k1=np.zeros((3,3))
+print(k1)
+k2=np.ones((5,5))
+print(k2)
+k3=np.ones(5)
+print(k3)
+print(k2[2,:]) 
+=============================
+import pandas as pd
+df = pd.read_csv('world_literacy_data_2021_2023.csv')
+print(df.head(10))
+print(df.columns)
+print(df.shape)
+print(df.isnull().sum())
+df.fillna(df.mean(numeric_only=True), inplace=True)
+print(df.head(10))
+top_gdp_2023 = df[df['Year'] == 2023].sort_values(by='GDP', ascending=False).head(10)
+print(top_gdp_2023[['Country', 'GDP' , 'Year']])
+top_literacy_2023 = df[df['Year'] == 2023].sort_values(by='Literacy Rate', ascending=False).head(10)
+print(top_literacy_2023[['Country', 'Literacy Rate' , 'Year']])
+import pandas as pd
+import plotly.express as px
+df =  pd.read_csv("world_literacy_data_2021_2023.csv")
+fig = px.line(df, x='Year', y='Literacy Rate', color='Country')
+fig.update_layout(
+    title='Year-wise Literacy Rate of Each Country',
+    xaxis_title='Year',
+    yaxis_title='Literacy Rate',
+    legend_title='Country'
+)
+fig.show()
